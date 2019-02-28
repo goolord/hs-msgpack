@@ -1,0 +1,7 @@
+packages: ./
+
+source-repository-package
+    type: git
+    location: https://github.com/goolord/hs-msgpack-types
+    tag: c107e40fde5820b6a058e3c62f40cc9a5b86b319
+
