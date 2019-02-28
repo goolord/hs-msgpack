@@ -41,6 +41,7 @@ library
     , data-binary-ieee754
     , data-msgpack-types >= 0.0.1 && < 0.1.0
     , text
+    , vector
 
 executable msgpack-parser
   default-language: Haskell2010

@@ -40,6 +40,7 @@ import           Data.Int               (Int64)
 import qualified Data.Text              as T
 import qualified Data.Text.Encoding     as T
 import           Data.Word              (Word64, Word8)
+import qualified Data.Vector as V
 
 import           Prelude                hiding (putStr)
 
@@ -136,27 +137,27 @@ putBin bs = do
           putWord8 0xC6 >> putWord32be (fromIntegral len)
   putByteString bs
 
-putArray :: (a -> Put) -> [a] -> Put
+putArray :: (a -> Put) -> V.Vector a -> Put
 putArray p xs = do
-  case length xs of
+  case V.length xs of
     len | len <= 15 ->
           putWord8 $ 0x90 .|. fromIntegral len
         | len < 0x10000 ->
           putWord8 0xDC >> putWord16be (fromIntegral len)
         | otherwise ->
           putWord8 0xDD >> putWord32be (fromIntegral len)
-  mapM_ p xs
+  V.mapM_ p xs
 
-putMap :: (a -> Put) -> (b -> Put) -> [(a, b)] -> Put
+putMap :: (a -> Put) -> (b -> Put) -> V.Vector (a, b) -> Put
 putMap p q xs = do
-  case length xs of
+  case V.length xs of
     len | len <= 15 ->
           putWord8 $ 0x80 .|. fromIntegral len
         | len < 0x10000 ->
           putWord8 0xDE >> putWord16be (fromIntegral len)
         | otherwise ->
           putWord8 0xDF >> putWord32be (fromIntegral len)
-  mapM_ (\(a, b) -> p a >> q b) xs
+  V.mapM_ (\(a, b) -> p a >> q b ) xs
 
 putExt :: Word8 -> S.ByteString -> Put
 putExt typ dat = do
